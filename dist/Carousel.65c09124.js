@@ -12627,9 +12627,121 @@ var BASE_URL = 'https://api.thecatapi.com/v1';
  *  - Each option should display text equal to the name of the breed.
  * This function should execute immediately.
  */
+// async function initialLoad() {
+//   try {
+//     // Fetch the list of cat breeds from the cat API
+//     const response = await fetch('https://api.thecatapi.com/v1/breeds?api_key='+API_KEY);
+//     const breeds = await response.json();
+// 		console.log(breeds);
+
+//     // Create options and append them to the breedSelect
+//     breeds.forEach(breed => {
+//       const option = document.createElement('option');
+//       option.value = breed.id;
+//       option.textContent = breed.name;
+//       breedSelect.appendChild(option);
+//     });
+//   } catch (error) {
+//     console.error('Error fetching cat breeds:', error);
+//   }
+// }
+// initialLoad()
+
+// /**Create an event handler for breedSelect that does the following:
+// Retrieve information on the selected breed from the cat API using fetch().
+// Make sure your request is receiving multiple array items!
+// Check the API documentation if you are only getting a single object.
+// For each object in the response array, create a new element for the carousel.
+// Append each of these new elements to the carousel.
+// Use the other data you have been given to create an informational section within the infoDump element.
+// Be creative with how you create DOM elements and HTML.
+// Feel free to edit index.html and styles.css to suit your needs.
+// Remember that functionality comes first, but user experience and design are also important.
+// Each new selection should clear, re-populate, and restart the carousel.
+// Add a call to this function to the end of your initialLoad function above to create the initial carousel.
+
+// */
+
+// /**
+//  * Function to load breed information and update the carousel
+//  */
+// async function loadBreedInfo(breedId) {
+//   try {
+//     const response = await fetch(`${BASE_URL}/images/search?breed_id=${breedId}&limit=10`, {
+//       headers: {
+//         'x-api-key': API_KEY
+//       }
+//     });
+//     const breedImages = await response.json();
+
+//     // Clear existing carousel and infoDump
+//     Carousel.clear();
+//     infoDump.innerHTML = '';
+
+//     // Append new items to the carousel
+//     breedImages.forEach(imageData => {
+//       const carouselItem = Carousel.createCarouselItem(imageData.url, imageData.breeds[0]?.name || 'Unknown', imageData.id);
+//       Carousel.appendCarousel(carouselItem);
+//     });
+
+//     // Update information section
+//     if (breedImages.length > 0 && breedImages[0].breeds.length > 0) {
+//       const breed = breedImages[0].breeds[0];
+//       const breedInfo = `
+//         <h2>${breed.name}</h2>
+//         <p>${breed.description}</p>
+//         <p><strong>Temperament:</strong> ${breed.temperament}</p>
+//         <p><strong>Origin:</strong> ${breed.origin}</p>
+//         <p><strong>Life Span:</strong> ${breed.life_span} years</p>
+//       `;
+//       infoDump.innerHTML = breedInfo;
+//     }
+
+//     // Restart the carousel
+//     Carousel.start();
+//   } catch (error) {
+//     console.error('Error fetching breed information:', error);
+//   }
+// }
+
+// // Event listener for breed selection change
+// breedSelect.addEventListener('change', (event) => {
+//   const selectedBreedId = event.target.value;
+//   loadBreedInfo(selectedBreedId);
+// });
+
+// // Initial load
+// initialLoad();
+
+// default Axios headers and base URL
+_axios.default.defaults.headers.common['x-api-key'] = API_KEY;
+_axios.default.defaults.baseURL = BASE_URL;
+
+//request
+_axios.default.interceptors.request.use(function (config) {
+  // Initialize metadata if it doesn't exist
+  config.metadata = config.metadata || {};
+  // Log the start time of the request
+  config.metadata.startTime = new Date();
+  console.log("Request started at ".concat(config.metadata.startTime));
+  return config;
+}, function (error) {
+  return Promise.reject(error);
+});
+_axios.default.interceptors.response.use(function (response) {
+  // Calculate the time difference between request and response
+  var elapsedTime = new Date() - response.config.metadata.startTime;
+  console.log("Request finished in ".concat(elapsedTime, " milliseconds"));
+  return response;
+}, function (error) {
+  return Promise.reject(error);
+});
 function initialLoad() {
   return _initialLoad.apply(this, arguments);
 }
+/**
+ * Function to load breed information and update the carousel
+ */
 function _initialLoad() {
   _initialLoad = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
     var response, breeds;
@@ -12638,56 +12750,35 @@ function _initialLoad() {
         case 0:
           _context.prev = 0;
           _context.next = 3;
-          return fetch('https://api.thecatapi.com/v1/breeds?api_key=' + API_KEY);
+          return _axios.default.get('/breeds');
         case 3:
           response = _context.sent;
-          _context.next = 6;
-          return response.json();
-        case 6:
-          breeds = _context.sent;
-          console.log(breeds);
-
-          // Create options and append them to the breedSelect
+          breeds = response.data; // Create options and append them to the breedSelect
           breeds.forEach(function (breed) {
             var option = document.createElement('option');
             option.value = breed.id;
             option.textContent = breed.name;
             breedSelect.appendChild(option);
           });
-          _context.next = 14;
+
+          // Initial load for the first breed in the list
+          if (breeds.length > 0) {
+            loadBreedInfo(breeds[0].id);
+          }
+          _context.next = 12;
           break;
-        case 11:
-          _context.prev = 11;
+        case 9:
+          _context.prev = 9;
           _context.t0 = _context["catch"](0);
           console.error('Error fetching cat breeds:', _context.t0);
-        case 14:
+        case 12:
         case "end":
           return _context.stop();
       }
-    }, _callee, null, [[0, 11]]);
+    }, _callee, null, [[0, 9]]);
   }));
   return _initialLoad.apply(this, arguments);
 }
-initialLoad();
-
-/**Create an event handler for breedSelect that does the following:
-Retrieve information on the selected breed from the cat API using fetch().
-Make sure your request is receiving multiple array items!
-Check the API documentation if you are only getting a single object.
-For each object in the response array, create a new element for the carousel.
-Append each of these new elements to the carousel.
-Use the other data you have been given to create an informational section within the infoDump element.
-Be creative with how you create DOM elements and HTML.
-Feel free to edit index.html and styles.css to suit your needs.
-Remember that functionality comes first, but user experience and design are also important.
-Each new selection should clear, re-populate, and restart the carousel.
-Add a call to this function to the end of your initialLoad function above to create the initial carousel.
-
-*/
-
-/**
- * Function to load breed information and update the carousel
- */
 function loadBreedInfo(_x) {
   return _loadBreedInfo.apply(this, arguments);
 } // Event listener for breed selection change
@@ -12699,18 +12790,10 @@ function _loadBreedInfo() {
         case 0:
           _context2.prev = 0;
           _context2.next = 3;
-          return fetch("".concat(BASE_URL, "/images/search?breed_id=").concat(breedId, "&limit=10"), {
-            headers: {
-              'x-api-key': API_KEY
-            }
-          });
+          return _axios.default.get("/images/search?breed_id=".concat(breedId, "&limit=10"));
         case 3:
           response = _context2.sent;
-          _context2.next = 6;
-          return response.json();
-        case 6:
-          breedImages = _context2.sent;
-          // Clear existing carousel and infoDump
+          breedImages = response.data; // Clear existing carousel and infoDump
           Carousel.clear();
           infoDump.innerHTML = '';
 
@@ -12730,17 +12813,17 @@ function _loadBreedInfo() {
 
           // Restart the carousel
           Carousel.start();
-          _context2.next = 17;
+          _context2.next = 15;
           break;
-        case 14:
-          _context2.prev = 14;
+        case 12:
+          _context2.prev = 12;
           _context2.t0 = _context2["catch"](0);
           console.error('Error fetching breed information:', _context2.t0);
-        case 17:
+        case 15:
         case "end":
           return _context2.stop();
       }
-    }, _callee2, null, [[0, 14]]);
+    }, _callee2, null, [[0, 12]]);
   }));
   return _loadBreedInfo.apply(this, arguments);
 }
@@ -12748,8 +12831,6 @@ breedSelect.addEventListener('change', function (event) {
   var selectedBreedId = event.target.value;
   loadBreedInfo(selectedBreedId);
 });
-
-// Initial load
 initialLoad();
 
 /**
@@ -12928,7 +13009,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52163" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55643" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
