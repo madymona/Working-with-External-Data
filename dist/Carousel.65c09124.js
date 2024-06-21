@@ -12619,9 +12619,6 @@ var getFavouritesBtn = document.getElementById("getFavouritesBtn");
 var API_KEY = "live_T3oZ8no0B62zhChZrtxFaEJIiz5qzf5YVlNT5p2OB420fn7HiGj2sySg9M2l4YBD";
 var BASE_URL = 'https://api.thecatapi.com/v1';
 
-// axios.defaults.headers.common['x-api-key'] = API_KEY;
-// axios.defaults.baseURL = 'https://api.thecatapi.com/v1'; 
-
 /**
  * 1. Create an async function "initialLoad" that does the following:
  * - Retrieve a list of breeds from the cat API using fetch().
@@ -12673,14 +12670,20 @@ function _initialLoad() {
 }
 initialLoad();
 
-/**
- * 1. Create an async function "initialLoad" that does the following:
- * - Retrieve a list of breeds from the cat API using fetch().
- * - Create new <options> for each of these breeds, and append them to breedSelect.
- * - Each option should have a value attribute equal to the id of the breed.
- * - Each option should display text equal to the name of the breed.
- * This function should execute immediately.
- */
+/**Create an event handler for breedSelect that does the following:
+Retrieve information on the selected breed from the cat API using fetch().
+Make sure your request is receiving multiple array items!
+Check the API documentation if you are only getting a single object.
+For each object in the response array, create a new element for the carousel.
+Append each of these new elements to the carousel.
+Use the other data you have been given to create an informational section within the infoDump element.
+Be creative with how you create DOM elements and HTML.
+Feel free to edit index.html and styles.css to suit your needs.
+Remember that functionality comes first, but user experience and design are also important.
+Each new selection should clear, re-populate, and restart the carousel.
+Add a call to this function to the end of your initialLoad function above to create the initial carousel.
+
+*/
 
 /**
  * Function to load breed information and update the carousel
@@ -12925,7 +12928,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49185" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52163" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

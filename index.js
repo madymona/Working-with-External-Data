@@ -14,9 +14,6 @@ const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 const API_KEY = "live_T3oZ8no0B62zhChZrtxFaEJIiz5qzf5YVlNT5p2OB420fn7HiGj2sySg9M2l4YBD";
 const BASE_URL = 'https://api.thecatapi.com/v1';
 
-// axios.defaults.headers.common['x-api-key'] = API_KEY;
-// axios.defaults.baseURL = 'https://api.thecatapi.com/v1'; 
-
 /**
  * 1. Create an async function "initialLoad" that does the following:
  * - Retrieve a list of breeds from the cat API using fetch().
@@ -45,15 +42,20 @@ async function initialLoad() {
 }
 initialLoad()
 
+/**Create an event handler for breedSelect that does the following:
+Retrieve information on the selected breed from the cat API using fetch().
+Make sure your request is receiving multiple array items!
+Check the API documentation if you are only getting a single object.
+For each object in the response array, create a new element for the carousel.
+Append each of these new elements to the carousel.
+Use the other data you have been given to create an informational section within the infoDump element.
+Be creative with how you create DOM elements and HTML.
+Feel free to edit index.html and styles.css to suit your needs.
+Remember that functionality comes first, but user experience and design are also important.
+Each new selection should clear, re-populate, and restart the carousel.
+Add a call to this function to the end of your initialLoad function above to create the initial carousel.
 
-/**
- * 1. Create an async function "initialLoad" that does the following:
- * - Retrieve a list of breeds from the cat API using fetch().
- * - Create new <options> for each of these breeds, and append them to breedSelect.
- * - Each option should have a value attribute equal to the id of the breed.
- * - Each option should display text equal to the name of the breed.
- * This function should execute immediately.
- */
+*/
 
 /**
  * Function to load breed information and update the carousel
