@@ -12,9 +12,10 @@ const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 
 // Step 0: Store your API key here for reference and easy access.
 const API_KEY = "live_T3oZ8no0B62zhChZrtxFaEJIiz5qzf5YVlNT5p2OB420fn7HiGj2sySg9M2l4YBD";
+const BASE_URL = 'https://api.thecatapi.com/v1';
 
-axios.defaults.headers.common['x-api-key'] = API_KEY;
-axios.defaults.baseURL = 'https://api.thecatapi.com/v1'; 
+// axios.defaults.headers.common['x-api-key'] = API_KEY;
+// axios.defaults.baseURL = 'https://api.thecatapi.com/v1'; 
 
 /**
  * 1. Create an async function "initialLoad" that does the following:
@@ -43,20 +44,68 @@ async function initialLoad() {
   }
 }
 initialLoad()
+
+
 /**
- * 2. Create an event handler for breedSelect that does the following:
- * - Retrieve information on the selected breed from the cat API using fetch().
- *  - Make sure your request is receiving multiple array items!
- *  - Check the API documentation if you're only getting a single object.
- * - For each object in the response array, create a new element for the carousel.
- *  - Append each of these new elements to the carousel.
- * - Use the other data you have been given to create an informational section within the infoDump element.
- *  - Be creative with how you create DOM elements and HTML.
- *  - Feel free to edit index.html and styles.css to suit your needs, but be careful!
- *  - Remember that functionality comes first, but user experience and design are important.
- * - Each new selection should clear, re-populate, and restart the Carousel.
- * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
+ * 1. Create an async function "initialLoad" that does the following:
+ * - Retrieve a list of breeds from the cat API using fetch().
+ * - Create new <options> for each of these breeds, and append them to breedSelect.
+ * - Each option should have a value attribute equal to the id of the breed.
+ * - Each option should display text equal to the name of the breed.
+ * This function should execute immediately.
  */
+
+/**
+ * Function to load breed information and update the carousel
+ */
+async function loadBreedInfo(breedId) {
+  try {
+    const response = await fetch(`${BASE_URL}/images/search?breed_id=${breedId}&limit=10`, {
+      headers: {
+        'x-api-key': API_KEY
+      }
+    });
+    const breedImages = await response.json();
+
+    // Clear existing carousel and infoDump
+    Carousel.clear();
+    infoDump.innerHTML = '';
+
+    // Append new items to the carousel
+    breedImages.forEach(imageData => {
+      const carouselItem = Carousel.createCarouselItem(imageData.url, imageData.breeds[0]?.name || 'Unknown', imageData.id);
+      Carousel.appendCarousel(carouselItem);
+    });
+
+    // Update information section
+    if (breedImages.length > 0 && breedImages[0].breeds.length > 0) {
+      const breed = breedImages[0].breeds[0];
+      const breedInfo = `
+        <h2>${breed.name}</h2>
+        <p>${breed.description}</p>
+        <p><strong>Temperament:</strong> ${breed.temperament}</p>
+        <p><strong>Origin:</strong> ${breed.origin}</p>
+        <p><strong>Life Span:</strong> ${breed.life_span} years</p>
+      `;
+      infoDump.innerHTML = breedInfo;
+    }
+
+    // Restart the carousel
+    Carousel.start();
+  } catch (error) {
+    console.error('Error fetching breed information:', error);
+  }
+}
+
+// Event listener for breed selection change
+breedSelect.addEventListener('change', (event) => {
+  const selectedBreedId = event.target.value;
+  loadBreedInfo(selectedBreedId);
+});
+
+// Initial load
+initialLoad();
+
 
 /**
  * 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."
